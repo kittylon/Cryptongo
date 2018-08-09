@@ -1,13 +1,14 @@
 import pymongo
 from flask import Flask, jsonify, request
 
+
 def get_db_connection(uri):
     client = pymongo.MongoClient(uri)
     return client.cryptongo
 
 
 app = Flask(__name__)
-db_connection = get_db_connection('mongodb://localhost:27017//')
+db_connection = get_db_connection('mongodb://localhost:27017/')
 
 
 def get_documents():
@@ -46,3 +47,19 @@ def remove_currency():
     return db_connection.tickers.delete_many(
         params
     ).deleted_count
+
+
+@app.route("/")
+def index():
+    return jsonify(
+        {
+            'name': 'Cryptongo API'
+        }
+    )
+
+
+@app.route("/top20", methods=['GET'])
+def top20():
+    return jsonify(
+        get_top20()
+    )

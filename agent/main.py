@@ -8,6 +8,7 @@ def get_db_connection(uri):
     client = pymongo.MongoClient(uri)
     return client.cryptongo
 
+
 def get_cryptocurrencies_from_api():
     r = requests.get(API_URL)
     if r.status_code == 200:
@@ -16,12 +17,15 @@ def get_cryptocurrencies_from_api():
 
     raise Exception('API Error')
 
+
 def get_hash(value):
     from hashlib import sha512
     return sha512(value.encode('utf-8')).hexdigest()
 
+
 def first_element(elements):
     return elements[0]
+
 
 def get_ticker_hash(ticker_data):
     from collections import OrderedDict
@@ -43,13 +47,13 @@ def check_if_exists(db_connection, ticker_data):
         return True
     return False
 
+
 def save_ticker(db_connection, ticker_data = None):
     if not ticker_data:
         return False
 
     if check_if_exists(db_connection, ticker_data):
         return False
-
 
     ticker_hash = get_ticker_hash(ticker_data)
     ticker_data['ticker_hash'] = ticker_hash
@@ -58,6 +62,7 @@ def save_ticker(db_connection, ticker_data = None):
 
     db_connection.tickers.insert_one(ticker_data)
     return True
+
 
 if __name__ == '__main__':
     connection = get_db_connection('mongodb://localhost:27017')
